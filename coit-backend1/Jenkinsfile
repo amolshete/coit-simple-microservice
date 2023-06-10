@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Pull code from version control repository
+                git 'https://github.com/KiruthikaES/coit-simple-microservice/coit-backend1.git'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                // Build the application
+                sh 'mvn clean install'
+            }
+        }
+        
+        stage('Create Artifacts') {
+            steps {
+                // Create artifacts (e.g., JAR file, WAR file)
+                sh 'mvn package'
+            }
+            
+            post {
+                success {
+                    // Archive the artifacts
+                    archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+                }
+            }
+        }
+    }
+}
