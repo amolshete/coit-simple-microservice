@@ -7,6 +7,10 @@ on:          #trigger part
 jobs:
    build-and-push:
        runs-on: ubuntu-latest
+
+       strategy:
+          matrix:
+              appname: [ coit-frontend, coit-backend1, coit-backend2 ]
        steps:
           - name: checkout the code
             uses: actions/checkout@v4
@@ -24,8 +28,8 @@ jobs:
             uses: docker/build-push-action@v6
             with:
                push: true
-               tags: amol1996/coit-backend1-2534345:v1.1.2
-               context: ./coit-backend1
-               file: ./coit-backend1/Dockerfile-multistage
+               tags: ${{ secrets.DOCKER_USERNAME }}/${{ matrix.appname }}:v1
+               context: ./${{ matrix.appname }}
+               file: ./${{ matrix.appname }}/Dockerfile-multistage
             
           
