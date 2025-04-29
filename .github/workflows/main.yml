@@ -19,6 +19,13 @@ jobs:
             with:
                username: ${{ secrets.DOCKER_USERNAME }}
                password: ${{ secrets.DOCKER_PASSWORD }}
-              
+
+          - name: build and push the docker image      
+            uses: docker/build-push-action@v6
+            with:
+               push: true
+               tags: amol1996/coit-backend1-2534345:v1.1.2
+               context: ./coit-simple-microservice/coit-backend1
+               file: ./coit-simple-microservice/coit-backend1/Dockerfile-multistage
             
           
