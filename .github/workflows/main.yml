@@ -6,7 +6,7 @@ on:          #trigger part
           - develop
 jobs:
    build-and-push:
-       runs-on: ubuntu-latest
+       runs-on: self-hosted
 
        strategy:
           matrix:
