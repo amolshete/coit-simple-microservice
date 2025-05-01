@@ -16,7 +16,7 @@ jobs:
             uses: actions/checkout@v4
 
           - name: adding user to docker group   
-            run: usermod -aG docker $USER && newgrp docker
+            run: sudo usermod -aG docker $USER && newgrp docker
             
           - name: Docker Setup Buildx
             uses: docker/setup-buildx-action@v3.10.0
