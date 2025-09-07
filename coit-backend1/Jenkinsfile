@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         APP_NAME = "coit-backend1"
-        DEPLOY_DIR = "/opt/apps"
+        DEPLOY_DIR = "/var/lib/jenkins/apps"
     }
 
     stages {
