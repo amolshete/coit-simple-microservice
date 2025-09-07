@@ -1,25 +1,69 @@
 pipeline {
     agent any
 
+    environment {
+        APP_NAME = "coit-backend1"
+        DEPLOY_DIR = "/opt/apps"
+    }
+
     stages {
+        stage('Checkout') {
+            steps {
+                echo '📥 Pulling code from Git...'
+                git branch: 'develop', url: 'https://github.com/amolshete/coit-simple-microservice.git'
+            }
+        }
+
         stage('Build') {
             steps {
-               sh 'cd coit-backend1 && mvn install'
+                echo '🔨 Building project with Maven...'
+                sh 'cd coit-backend1'
+                sh 'mvn clean package -DskipTests'
             }
         }
-        stage('docker-build') {
+
+        stage('Test') {
             steps {
-               sh 'echo "Docker Build"'
-               // sh 'cd coit-backend1 && docker build -t amol1996/coit-backend1-92234832:v2 .'
-               // sh 'docker images' 
+                echo '🧪 Running unit tests...'
+                sh 'cd coit-backend1'
+                sh 'mvn test'
             }
         }
-        stage('docker-push') {
+
+        // stage('Code Quality Check') {
+        //     steps {
+        //         echo '📊 Running SonarQube analysis...'
+        //         // Requires SonarQube plugin + server configured in Jenkins
+        //         withSonarQubeEnv('SonarQubeServer') {
+        //             sh 'mvn sonar:sonar'
+        //         }
+        //     }
+        // }
+
+        stage('Package') {
             steps {
-                sh 'echo "Docker Push"'
-                // sh 'echo "pushing docker image"'
-                // sh 'docker push amol1996/coit-backend1-92234832:v2'
+                echo '📦 Archiving JAR file...'
+                archiveArtifacts artifacts: 'coit-backend1/target/*.jar', fingerprint: true
             }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo "🚀 Deploying ${APP_NAME}..."
+                sh """
+                    mkdir -p ${DEPLOY_DIR}
+                    cp coit-backend1/target/*.jar ${DEPLOY_DIR}/${APP_NAME}.jar
+                """
+            }
+        }
     }
-}
+
+    post {
+        success {
+            echo '✅ Build & Deployment successful!'
+        }
+        failure {
+            echo '❌ Build failed. Please check logs.'
+        }
+    }
 }
