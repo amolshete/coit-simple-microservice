@@ -17,8 +17,10 @@ pipeline {
         stage('Build') {
             steps {
                 echo '🔨 Building project with Maven...'
-                sh 'cd coit-backend1'
-                sh 'mvn clean package -DskipTests'
+                sh '''
+                cd coit-backend1
+                mvn clean package -DskipTests
+                '''
             }
         }
 
